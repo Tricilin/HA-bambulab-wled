@@ -33,6 +33,14 @@ blueprint:
             - binary_sensor
             integration: bambu_lab
           multiple: false
+    chamber_light:
+      name: Chamber Light of your Bambu Lab Printer
+      description: "Select the printer chamber light entity."
+      selector:
+        entity:
+          filter:
+            domain: light
+            integration: bambu_lab
     wled_lights:
       name: WLED Light devices
       description: Select the WLED light devices you wish to control.
@@ -47,6 +55,7 @@ description: ''
 trigger:
 - platform: state
   entity_id:
+  - !input chamber_light
   - !input printer_state
   - !input printer_status
   - !input printer_stage
@@ -162,15 +171,37 @@ action:
       sequence:
       - service: light.turn_on
         data:
-          rgb_color:
-          - 255
-          - 255
-          - 255
+          rgbw_color:
+            - 0
+            - 0
+            - 0
+            - 255
           brightness: 255
           effect: Solid
         target:
           device_id: !input wled_lights
         alias: Turn on Wled to full white while printing
+    alias: Do we need to set color to white?
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: !input chamber_light
+          state: "on"
+      sequence:
+      - service: light.turn_on
+        data:
+          rgbw_color:
+            - 0
+            - 0
+            - 0
+            - 255
+          brightness: 255
+          effect: Solid
+        target:
+          device_id: !input wled_lights
+        alias: Turn on Wled to full white while chamber light is on
     alias: Do we need to set color to white?
   - choose:
     - conditions:
@@ -185,10 +216,11 @@ action:
       sequence:
       - service: light.turn_on
         data:
-          rgb_color:
-          - 255
-          - 255
-          - 255
+          rgbw_color:
+            - 0
+            - 0
+            - 0
+            - 255
           brightness: 255
           effect: Solid
         target:
@@ -300,5 +332,21 @@ action:
           target:
             device_id: !input wled_lights
           alias: Turn WLED light off
+        - choose:
+            - conditions:
+                - condition: or
+                  conditions:
+                    - condition: state
+                      entity_id: !input chamber_light
+                      state: "off"
+                      alias: chamber light is off
+              sequence:
+                - service: light.turn_off
+                  data: {}
+                  target:
+                    device_id:
+                      !input wled_lights
+                  alias: Turn Wled light off
+#          alias: Do we need to set color to blue?        
 mode: single
 
