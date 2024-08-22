@@ -283,34 +283,34 @@ action:
         state: 'off'
         alias: printer state is off
         entity_id: !input printer_state
-      then:
-      - service: light.turn_off
-        data: {}
-        target:
-          device_id: !input wled_lights
-        alias: Turn WLED light off
-        - choose:
-            - conditions:
-                - condition: or
-                  conditions:
-                    - condition: state
-                      entity_id: !input chamber_light
-                      state: "off"
-                      alias: chamber light is off
-                    - condition: state
-                      entity_id: !input printer_stage
-                      state: calibrating_extrusion
-                      alias: Calibrating extrusion
-                    - condition: state
-                      entity_id: !input printer_stage
-                      state: calibrating_micro_lidar
-                      alias: Calibrating micro lidar                       
-              sequence:
-                - service: light.turn_off
-                  data: {}
-                  target:
-                    device_id:
-                      !input wled_lights
-                  alias: Turn Wled light off
-          alias: Do we need turn off?      
+        then:
+        - service: light.turn_off
+          data: {}
+          target:
+            device_id: !input wled_lights
+          alias: Turn WLED light off
+          - choose:
+              - conditions:
+                  - condition: or
+                    conditions:
+                      - condition: state
+                        entity_id: !input chamber_light
+                        state: "off"
+                        alias: chamber light is off
+                      - condition: state
+                        entity_id: !input printer_stage
+                        state: calibrating_extrusion
+                        alias: Calibrating extrusion
+                      - condition: state
+                        entity_id: !input printer_stage
+                        state: calibrating_micro_lidar
+                        alias: Calibrating micro lidar                       
+                sequence:
+                  - service: light.turn_off
+                    data: {}
+                    target:
+                      device_id:
+                        !input wled_lights
+                    alias: Turn Wled light off
+            alias: Do we need turn off?      
 mode: single
