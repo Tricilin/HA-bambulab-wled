@@ -278,29 +278,26 @@ action:
         alias: Turn on Wled to yellow
     alias: Do we need to set color to yellow?
   - choose:
-      - conditions:
-        - condition: or
-          conditions:
-          - condition: state
-            state: "off"
-            alias: printer state is off
-            entity_id: !input printer_state
-          - condition: state
-            entity_id: !input chamber_light
-            state: "off"
-            alias: chamber light is off
-          - condition: state
-            entity_id: !input printer_stage
-            state: calibrating_extrusion
-            alias: Calibrating extrusion
-          - condition: state
-            entity_id: !input printer_stage
-            state: calibrating_micro_lidar
-            alias: Calibrating micro lidar                       
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: !input printer_state
+          state: "off"
+        - condition: state
+          entity_id: !input chamber_light
+          state: 'off'          
+        - condition: state
+          entity_id: !input printer_stage
+          state: calibrating_extrusion
+        - condition: state
+          entity_id: !input printer_stage
+          state: calibrating_micro_lidar        
       sequence:
-        - service: light.turn_off
-          data: {}
-          target:
-            device_id: !input wled_lights
-    alias: Do we need to turn off the lights?    
+      - service: light.turn_off
+        data: {}
+        target:
+          device_id: !input wled_lights
+        alias: Turn off lights
+    alias: Do we need to turn the lights off?
 mode: single
