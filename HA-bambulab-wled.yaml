@@ -310,6 +310,4 @@ else:
             data: {}
             target:
               device_id: !input wled_lights
-          alias: Turn Wled light off
-  alias: Do we need to turn off?    
 mode: single
