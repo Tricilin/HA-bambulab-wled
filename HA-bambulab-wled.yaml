@@ -282,7 +282,7 @@ action:
         - condition: or
           conditions:
           - condition: state
-            state: 'off'
+            state: "off"
             alias: printer state is off
             entity_id: !input printer_state
           - condition: state
